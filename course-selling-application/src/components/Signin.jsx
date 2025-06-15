@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Signin(){
 
@@ -7,28 +9,33 @@ export default function Signin(){
     const [email, setEmail] = useState("");
     const [password,setPassword] = useState("");
 
+    const navigate = useNavigate();
+
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
 
     const handleSubmit = async () => {
         try{
-            const response = fetch(`/api/${role}/signin`,{  // fetch api used to make HTTP request the server, returns a promise as Response JSON object, built in modern browsers.
+            const response = await fetch(`/api/${role}/signin`,{  // fetch api used to make HTTP request the server, returns a promise as Response JSON object, built in modern browsers.
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
 
             })
 
-             if (!response.ok) {
-      const errorText = await response.text(); // fallback if not JSON
-      throw new Error(errorText || "Login failed");
-    }
-
            const result = await response.json();
 
             if(response.ok){
                 alert(`${role} logged in successfully`);
                 localStorage.setItem("token",result.token); // localStorage stores the token sent by backend at the browser until removed manually/persistently
+                
+                if(role === 'admin'){
+                  navigate('/dashboard/admin');
+
+                }else{
+                   navigate('/dashboard/user');
+                }
+
 
 
             }else{
@@ -78,7 +85,7 @@ export default function Signin(){
                   Password
                 </label>
                 <div className="text-sm">
-                  <label for="dropdown">Choose your role:</label>
+                  <label >Choose your role:</label>
                   <select id="dropdown" value={role} onChange={(e) => setRole(e.target.value)}>
                   <option value="">Your Role</option>
                   <option value="admin">Admin</option>
