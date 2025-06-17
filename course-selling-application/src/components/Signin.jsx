@@ -27,6 +27,8 @@ export default function Signin(){
 
             if(response.ok){
                 alert(`${role} logged in successfully`);
+                const firstName = result.firstName;
+                const lastName = result.lastName;
                 localStorage.setItem("token",result.token); // localStorage stores the token sent by backend at the browser until removed manually/persistently
                 
                 if(role === 'admin'){

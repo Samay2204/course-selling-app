@@ -1,6 +1,19 @@
 import { Outlet, NavLink } from "react-router-dom";
 
+//The sidebar and navbar remains constant, only the text content area is being changed according to buttons pressed.
+//This works because of "React Router’s Nested Routing" and "layout component reuse".
+//Layout Component is UserDashboard, sidebar is put in it, used <Outlet/> for changing part
+//The changing part is nested within the dashboard component, 
+// When the URL changes (e.g., /cart, /settings), only the content inside <Outlet /> changes — not the sidebar or navbar.
+
+
 export default function UserDashBoard() {
+
+  const navLinkClasses = ({ isActive }) =>
+  isActive
+    ? "bg-violet-800 text-white px-6 py-2 rounded "
+    : "bg-violet-600 hover:bg-violet-700 text-white px-2 py-2 rounded";
+
   return (
     <div className="min-h-screen bg-white flex">
       {/* Sidebar */}
@@ -11,25 +24,21 @@ export default function UserDashBoard() {
           <div className="flex flex-col space-y-2">
             <NavLink
               to="courses"
-              className="bg-violet-600 hover:bg-violet-800 px-4 py-2 rounded"
+              className={navLinkClasses}
             >
               Enrolled Courses
             </NavLink>
-            <NavLink
-              to="cart"
-              className="bg-violet-600 hover:bg-violet-800 px-4 py-2 rounded"
-            >
-              Cart
-            </NavLink>
+
             <NavLink
               to="settings"
-              className="bg-violet-600 hover:bg-violet-800 px-4 py-2 rounded"
+              className={navLinkClasses}
             >
               Settings
             </NavLink>
+
             <NavLink
               to="logout"
-              className="bg-violet-600 hover:bg-violet-800 px-4 py-2 rounded"
+              className={navLinkClasses}
             >
               Logout
             </NavLink>
@@ -64,9 +73,9 @@ export default function UserDashBoard() {
         </nav>
 
         {/* Outlet: Page-specific content */}
-        <main className="p-10">
+         <main className="p-10">
           <Outlet />
-        </main>
+        </main> 
       </div>
     </div>
   );

@@ -23,15 +23,26 @@ function Signup() {
 
   const handleSubmit = async () => {
         try {
-            const res = await fetch(`/api/${role}/signup`, {
+            const res = await fetch(`/api/admin/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData),
 
            });
 
-           const result = await res.json();
-           alert(`${role} signed up successfully`);
+          const result = await res.json();
+
+          if (result.error?.name === "ZodError") {
+              
+              alert(`Invalid input format, Signup failed`);
+            }else{
+               if(res.ok){
+               alert(`${role} signed up successfully`);
+           }
+            }
+          
+          
+           
 
         }catch(err){
           alert('Signup Failed');

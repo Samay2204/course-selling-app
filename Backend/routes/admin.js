@@ -30,7 +30,7 @@ adminRouter.post("/signup", async function (req, res) {
     }
 
     // destructuring the parsed data into variables 
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName } = parseDataWithSuccess.data;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
@@ -56,7 +56,7 @@ adminRouter.post("/signup", async function (req, res) {
 adminRouter.post("/signin", async function (req, res) {
     const requireBody = zod.object({
         email: zod.string().email(),
-        password: zod.string().min(6),
+        password: zod.string().min(5),
     });
 
     const parseDataWithSuccess = requireBody.safeParse(req.body);
@@ -85,12 +85,26 @@ adminRouter.post("/signin", async function (req, res) {
     //if login successful then create a token
     if (passwordMatch) {
         const token = jwt.sign({ id: admin._id }, JWT_ADMIN_PASSWORD);
-        res.status(200).json({ token });
+        const firstName = admin.firstName;
+        const lastName = admin.lastName;
+        
+        res.status(200).json({ token,
+                               firstName,
+                               lastName
+         });
     } else {
         res.status(403).json({
             message: "Invalid Credentials!",
         });
     }
+
+    
+});
+
+adminRouter.get("/dashboard",adminMiddleware, async (req,res) =>{
+   const admin = await adminModel.findById(req.userId);
+
+   
 });
 
 adminRouter.post("/course", adminMiddleware, async function (req, res) {
@@ -127,6 +141,8 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
         courseId: course._id,
     });
 });
+
+
 
 adminRouter.put("/course", adminMiddleware, async function (req, res) {
     const adminId = req.adminId;
