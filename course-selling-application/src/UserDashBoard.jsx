@@ -15,7 +15,7 @@ export default function UserDashBoard() {
     : "bg-violet-600 hover:bg-violet-700 text-white px-2 py-2 rounded";
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-white flex">--------
       {/* Sidebar */}
       <aside className="w-60 bg-violet-600 text-white p-6 space-y-6">
         <div className="text-2xl font-bold">LearnHUB</div>

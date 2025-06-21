@@ -1,7 +1,51 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 
 export default function AdminDashBoard(){
+
+  console.log("adb loaded" );
+
+   
+
+  const [userData, setUserData] = useState(null);
+
+     useEffect(() => {
+      console.log("Component mounted");
+      
+
+      const fetchData = async ()=>{
+            const token = localStorage.getItem("token"); //  fetch after component mounts
+              console.log("Token being sent:", token);
+
+             
+
+      
+        const res = await fetch("/api/admin/dashboard", {
+            headers: {
+              "Authorization": token,
+            }
+          })
+
+          const data = await res.json();
+
+          if(res.ok){
+              setUserData(data);
+          }else {
+                   console.error("Failed to load dashboard:", data.message);
+                   setUserData(null);
+                }
+
+        };
+
+     fetchData();
+     }, []);
+
+    
+
+      if (!userData) {
+    return <p>Loading dashboard...</p>;
+  }
+     
 
   
    return(
@@ -11,7 +55,7 @@ export default function AdminDashBoard(){
   
   <div class="bg-indigo-900 text-white w-64 transition-all duration-300 ease-in-out">
     <div class="p-4 flex items-center justify-between">
-      <h2 class="text-xl font-bold">EduPlatform</h2>
+      <h2 class="text-xl font-bold">EduHub</h2>
       <button class="text-white cursor-pointer !rounded-button whitespace-nowrap">
         <i class="fas fa-chevron-left"></i>
       </button>
@@ -48,13 +92,22 @@ export default function AdminDashBoard(){
         </div>
         <div class="flex items-center space-x-6">
           <div class="text-gray-600">
-            <span class="mr-2">Today is Monday, June 16, 2025</span>
+           <span className="mr-2">
+  {new Date().toLocaleDateString("en-US", { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  })}
+</span>
           </div>
           <div class="flex items-center">
             <img src="" alt="Profile" class="h-10 w-10 rounded-full object-cover" />
             <div class="ml-3">
-              <p class="text-sm font-medium text-gray-800">Dr. Michael Johnson</p>
-              <p class="text-xs text-gray-500">Senior Instructor</p>
+               <p class="text-sm font-medium text-gray-800">{userData.firstName} {userData.lastName}</p> 
+              
+              
+              
             </div>
           </div>
         </div>
@@ -65,8 +118,8 @@ export default function AdminDashBoard(){
     <main class="p-6">
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Welcome back, Dr. Johnson</h2>
-          <p class="text-gray-600">Last login: June 15, 2025 at 08:45 AM</p>
+          <h2 class="text-2xl font-bold text-gray-800">Welcome back,{userData.firstName} </h2>
+          
         </div>
         <div class="flex items-center bg-green-100 px-4 py-2 rounded-full">
           <div class="h-3 w-3 bg-green-500 rounded-full mr-2"></div>
@@ -80,7 +133,7 @@ export default function AdminDashBoard(){
           <div class="flex justify-between items-start">
             <div>
               <p class="text-gray-500 text-sm">Active Courses</p>
-              <h3 class="text-3xl font-bold text-gray-800 mt-1">12</h3>
+              <h3 class="text-3xl font-bold text-gray-800 mt-1">{userData.dashBoardStats.courses}</h3>
             </div>
             <div class="bg-indigo-100 p-3 rounded-full">
               <i class="fas fa-book text-indigo-600"></i>
@@ -91,7 +144,7 @@ export default function AdminDashBoard(){
           <div class="flex justify-between items-start">
             <div>
               <p class="text-gray-500 text-sm">Total Students</p>
-              <h3 class="text-3xl font-bold text-gray-800 mt-1">1,248</h3>
+              <h3 class="text-3xl font-bold text-gray-800 mt-1">{userData.dashBoardStats.courses}</h3>
             </div>
             <div class="bg-blue-100 p-3 rounded-full">
               <i class="fas fa-users text-blue-600"></i>
@@ -100,10 +153,7 @@ export default function AdminDashBoard(){
         </div>
         <div class="bg-white rounded-lg shadow-sm p-6">
           <div class="flex justify-between items-start">
-            <div>
-              <p class="text-gray-500 text-sm">Average Rating</p>
-              <h3 class="text-3xl font-bold text-gray-800 mt-1">4.8</h3>
-            </div>
+
             <div class="bg-yellow-100 p-3 rounded-full">
               <i class="fas fa-star text-yellow-600"></i>
             </div>

@@ -10,7 +10,8 @@ import Logout from "./components/Logout";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
-  
+  console.log("App loaded ✅");
+
 
   return (
     <>

@@ -101,11 +101,24 @@ adminRouter.post("/signin", async function (req, res) {
     
 });
 
-adminRouter.get("/dashboard",adminMiddleware, async (req,res) =>{
-   const admin = await adminModel.findById(req.userId);
+adminRouter.get("/dashboard", adminMiddleware, async (req, res) => {
+  console.log("Dashboard route hit. Admin ID:", req.adminId);
 
-   
+  try {
+    const admin = await adminModel.findById(req.adminId);
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    res.json({
+      firstName: admin.firstName,
+      lastName: admin.lastName,
+      stats: admin.dashBoardStats,
+    });
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
+
 
 adminRouter.post("/course", adminMiddleware, async function (req, res) {
     const adminId = req.adminId; //set by adminMiddleware

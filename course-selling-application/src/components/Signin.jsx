@@ -26,17 +26,18 @@ export default function Signin(){
            const result = await response.json();
 
             if(response.ok){
-                alert(`${role} logged in successfully`);
-                const firstName = result.firstName;
-                const lastName = result.lastName;
-                localStorage.setItem("token",result.token); // localStorage stores the token sent by backend at the browser until removed manually/persistently
                 
-                if(role === 'admin'){
-                  navigate('/dashboard/admin');
-
-                }else{
-                   navigate('/dashboard/user');
-                }
+                
+                localStorage.setItem("token",result.token); // localStorage stores the token sent by backend at the browser until removed manually/persistently
+                alert(`${role} logged in successfully`);
+                
+                setTimeout(() => {
+                   if (role === "admin") {
+                       navigate("/dashboard/admin");
+                       } else {
+                       navigate("/dashboard/user");
+                       }
+                    }, 100);
 
 
 

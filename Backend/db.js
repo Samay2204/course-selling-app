@@ -15,6 +15,10 @@ const adminSchema = new Schema({
     password: String,
     firstName: String,
     lastName: String,
+    dashBoardStats: {
+        courses: { type: Number, default: 0 },
+        studentsEnrolled: { type: Number, default: 0 }
+    }
 });
 
 const courseSchema = new Schema({
