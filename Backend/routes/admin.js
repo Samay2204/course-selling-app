@@ -149,9 +149,13 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
         creatorId: adminId,
     });
 
+    adminModel.dashBoardStats.courses += 1;
+    await adminModel.save();
+     
     res.status(201).json({
         message: "Course created!",
         courseId: course._id,
+        
     });
 });
 

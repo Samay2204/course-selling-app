@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 function Signup() {
   const [role, setRole] = useState(null); // Role = 'admin' or 'user'
