@@ -108,10 +108,15 @@ adminRouter.get("/dashboard", adminMiddleware, async (req, res) => {
     const admin = await adminModel.findById(req.adminId);
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
+    const courseCount = await courseModel.countDocuments({creatorId: req.adminId});
+
     res.json({
       firstName: admin.firstName,
       lastName: admin.lastName,
-      stats: admin.dashBoardStats,
+      stats: {
+        courses: courseCount,
+        studentsEnrolled: admin.dashBoardStats.studentsEnrolled,
+      },
     });
   } catch (err) {
     console.error("Dashboard error:", err);
@@ -149,9 +154,12 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
         creatorId: adminId,
     });
 
-    adminModel.dashBoardStats.courses += 1;
-    await adminModel.save();
-     
+
+    await adminModel.findByIdAndUpdate(adminId, {
+        $inc: { "dashBoardStats.courses": 1 }
+    });
+
+
     res.status(201).json({
         message: "Course created!",
         courseId: course._id,

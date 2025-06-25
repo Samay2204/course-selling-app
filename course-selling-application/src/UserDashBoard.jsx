@@ -1,3 +1,4 @@
+import { useEffect,useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 
 //The sidebar and navbar remains constant, only the text content area is being changed according to buttons pressed.
@@ -9,6 +10,37 @@ import { Outlet, NavLink } from "react-router-dom";
 
 export default function UserDashBoard() {
 
+  const [userData,setUserData] = useState(null);
+
+  const token = localStorage.getItem("token");
+
+  
+      useEffect(()=>{
+
+        const fetchData = async ()=> {
+
+            const res = await fetch("/api/user/dashboard",{
+            headers: { "Authorization": token}
+          });
+
+          const data = await res.json();
+
+          if(res.ok){
+              setUserData(data);
+          }else {
+                   console.error("Failed to load dashboard:", data.message);
+                   setUserData(null);
+                }
+        };
+
+        
+          fetchData();
+
+
+  }, []);
+  
+  
+  
   const navLinkClasses = ({ isActive }) =>
   isActive
     ? "bg-indigo-700 text-white font-bold px-6 py-4"
@@ -17,7 +49,7 @@ export default function UserDashBoard() {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Sidebar */}
-      <aside className="w-60 bg-indigo-800 text-white py-6 space-y-8">
+      <aside className="w-70 bg-indigo-800 text-white py-6 space-y-8">
         <div className="text-2xl font-bold text-center">LearnHUB</div>
   
   <nav className="flex flex-col ">
@@ -60,14 +92,66 @@ export default function UserDashBoard() {
           </div>
           <div className="flex items-center space-x-4">
             <div className="text-xl">🛒</div>
-            <div className="bg-red-500 rounded-full w-10 h-10 flex items-center justify-center font-bold">
-              RP
+            <div className="bg-violet-800 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">
+              {userData?.firstName?.charAt(0).toUpperCase()}{userData?.lastName?.charAt(0).toUpperCase()}
             </div>
           </div>
         </nav>
 
         {/* Outlet: Page-specific content */}
          <main className="p-10">
+         
+  <div >
+    <h1 className="text-3xl font-semibold mb-8">My Profile</h1>
+
+    {/* Profile Header */}
+    <div className="bg-violet-100 p-6 rounded-lg flex items-center justify-between mb-8 shadow-lg">
+      <div className="flex items-center space-x-4">
+        <div className="bg-violet-800 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold">
+          RP
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold">rdrdr pkkokpp</h2>
+          <p className="text-indigo-800">samaysam1234@gmail.com</p>
+        </div>
+      </div>
+      <button className="bg-violet-800 hover:bg-violet-500 text-white px-4 py-2 rounded-full font-semibold">
+        Edit 
+      </button>
+    </div>
+
+    {/* About Section */}
+    <div className="bg-violet-100 p-6 rounded-lg mb-8 flex justify-between items-start shadow-lg">
+      <div>
+        <h3 className="text-lg font-semibold mb-2">About</h3>
+        <p className="text-indigo-800">Write Something About Yourself</p>
+      </div>
+      <button className="bg-violet-800 hover:bg-violet-500 text-white px-4 py-2 rounded-full font-semibold">
+        Edit 
+      </button>
+    </div>
+
+    {/* Personal Details */}
+    <div className="bg-violet-100 p-6 rounded-lg flex justify-between items-start shadow-lg">
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Personal Details</h3>
+        <div className="grid grid-cols-2 gap-8 text-sm text-indigo-100">
+          <div>
+            <p className="text-indigo-800">First Name</p>
+            <p>rdrdr</p>
+          </div>
+          <div>
+            <p className="text-indigo-800">Last Name</p>
+            <p>pkkokpp</p>
+          </div>
+        </div>
+      </div>
+      <button className="bg-violet-800 hover:bg-violet-500 text-white px-4 py-2 rounded-full font-semibold">
+        Edit 
+      </button>
+    </div>
+  </div>
+
           <Outlet />
         </main> 
       </div>

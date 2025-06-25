@@ -50,7 +50,7 @@ userRouter.post("/signup", async function (req, res) {
 userRouter.post("/signin", async function (req, res) {
     const requireBody = zod.object({
         email: zod.string().email(),
-        password: zod.string().min(6),
+        password: zod.string(),
     });
 
     const parseDataWithSuccess = requireBody.safeParse(req.body);
@@ -76,13 +76,36 @@ userRouter.post("/signin", async function (req, res) {
 
     if (passwordMatch) {
         const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD); // creating token at the backend
-        res.status(200).json({ token }); // sending token to the frontend
+        res.status(200).json({ token: token, }); // sending token, to the frontend
     } else {
         res.status(403).json({
             message: "Invalid Credentials!",
         });
     }
 });
+
+userRouter.get("/dashboard", userMiddleware, async (req,res) =>{
+    const userId = req.userId;
+    console.log("Dashboard route hit. USER ID:", req.userId);
+
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.status(200).json({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+        })
+    } catch (error) {
+        console.log("Error in Dashboard retrival" + error);
+        res.status(500).json({ message: "Internal Server Error" });
+        
+    }
+    
+});
+
+
 
 userRouter.get("/purchases", userMiddleware, async function (req, res) {
     const userId = req.userId;

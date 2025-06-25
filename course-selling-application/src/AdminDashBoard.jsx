@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { Outlet, NavLink, useLocation} from "react-router-dom";
+import { Outlet, NavLink, useLocation,useNavigate} from "react-router-dom";
 
 
 export default function AdminDashBoard(){
@@ -9,6 +9,7 @@ export default function AdminDashBoard(){
   const [userData, setUserData] = useState(null);
   const location = useLocation();
   const isOnAdminDashBoard = location.pathname === "/dashboard/admin";
+  const navigate = useNavigate();
 
 
   const token = localStorage.getItem("token"); 
@@ -64,6 +65,7 @@ setFormdata((prev) => ({
 const handleSubmit = async (e)=> {
         e.preventDefault();
   try{
+
       const response = await fetch(`/api/admin/course`,{
         method: `POST`,
         headers: { 'Content-Type': 'application/json', 'Authorization': token, },
@@ -73,13 +75,21 @@ const handleSubmit = async (e)=> {
       const res = await response.json();
 
       console.log(res);
+
+      setFormdata({ title: "", description: "", imageUrl: "", price: 0 });
+
       
+   navigate("/dashboard/admin/courses");
 
 
   }catch(err){
        alert("Error in creating course" + err);
+       console.log(err);
+       
   }
 }
+
+
 
 
   const navLinkClasses = ({ isActive }) =>
@@ -126,8 +136,8 @@ const handleSubmit = async (e)=> {
     <header class="bg-white shadow-sm sticky top-0 z-10">
       <div class="flex justify-between items-center px-6 py-3">
         <div class="flex items-center">
-          <img src="" alt="Logo" class="h-10" />
-          <h1 class="ml-3 text-xl font-semibold text-gray-800">EduHUB</h1>
+          
+          <h1 class="ml-3 text-xl font-semibold text-gray-800">LearnHUB</h1>
         </div>
         <div class="flex items-center space-x-6">
           <div class="text-gray-600">
@@ -186,16 +196,7 @@ const handleSubmit = async (e)=> {
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-lg shadow-sm p-6">
-          <div class="flex justify-between items-start">
-
-            <div class="bg-yellow-100 p-3 rounded-full">
-              <i class="fas fa-star text-yellow-600"></i>
-            </div>
-          </div>
-        </div>
-        
-      </div>
+       </div>
 
       {/* Quick Actions*/}
 
