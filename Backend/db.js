@@ -26,7 +26,10 @@ const courseSchema = new Schema({
     description: String,
     price: Number,
     imageUrl: String,
-    creatorId: ObjectId,
+    creatorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "admin",
+    },
 });
 
 const purchaseSchema = new Schema({

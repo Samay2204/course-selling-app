@@ -1,5 +1,6 @@
 import { useEffect,useState } from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link, useLocation } from "react-router-dom";
+
 
 //The sidebar and navbar remains constant, only the text content area is being changed according to buttons pressed.
 //This works because of "React Router’s Nested Routing" and "layout component reuse".
@@ -13,6 +14,11 @@ export default function UserDashBoard() {
   const [userData,setUserData] = useState(null);
 
   const token = localStorage.getItem("token");
+
+  const location = useLocation();
+  const isOnUserDashBoard = location.pathname === "/dashboard/user";
+
+ 
 
   
       useEffect(()=>{
@@ -61,8 +67,8 @@ export default function UserDashBoard() {
       Enrolled Courses
     </NavLink>
     
-    <NavLink to="/dashboard/user/settings" className={navLinkClasses}>
-      Settings
+    <NavLink to="/dashboard/user/browse" className={navLinkClasses}>
+      Browse Courses
     </NavLink>
     
     <NavLink to="/dashboard/user/logout" className={navLinkClasses}>
@@ -77,12 +83,17 @@ export default function UserDashBoard() {
         {/* Navbar */}
         <nav className="bg-white text-black flex justify-between items-center px-8 py-4 shadow-sm sticky top-0 z-10">
           <div className="font-bold space-x-10 ">
+
             <a href="#" className="hover:text-indigo-300 cursor-pointer">
               Home
             </a>
-            <a href="#" className="hover:text-indigo-300 cursor-pointer">
-              Catalog
-            </a>
+
+            <Link to="/browsecourses">
+            <button className="hover:text-indigo-300 cursor-pointer">
+              Browse Courses
+            </button>
+            </Link>
+
             <a href="#" className="hover:text-indigo-300 cursor-pointer">
               About Us
             </a>
@@ -101,18 +112,21 @@ export default function UserDashBoard() {
         {/* Outlet: Page-specific content */}
          <main className="p-10">
          
-  <div >
-    <h1 className="text-3xl font-semibold mb-8">My Profile</h1>
+  
+
+
+    { isOnUserDashBoard && (<div>
+      <h1 className="text-3xl font-semibold mb-8">My Profile</h1>
 
     {/* Profile Header */}
     <div className="bg-violet-100 p-6 rounded-lg flex items-center justify-between mb-8 shadow-lg">
       <div className="flex items-center space-x-4">
         <div className="bg-violet-800 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold">
-          RP
+           {userData?.firstName?.charAt(0).toUpperCase()}{userData?.lastName?.charAt(0).toUpperCase()}
         </div>
         <div>
-          <h2 className="text-xl font-semibold">rdrdr pkkokpp</h2>
-          <p className="text-indigo-800">samaysam1234@gmail.com</p>
+          <h2 className="text-xl font-semibold">{userData?.firstName} {userData?.lastName}</h2>
+          <p className="text-indigo-800">{userData?.email}</p>
         </div>
       </div>
       <button className="bg-violet-800 hover:bg-violet-500 text-white px-4 py-2 rounded-full font-semibold">
@@ -151,6 +165,9 @@ export default function UserDashBoard() {
       </button>
     </div>
   </div>
+  
+  ) }
+    
 
           <Outlet />
         </main> 
