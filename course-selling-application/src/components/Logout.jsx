@@ -1,3 +1,11 @@
 export default function Logout() {
-  return <h1 className="text-2xl font-bold">Logout</h1>;
+  {/* Purchase Modal */}
+
+  return (
+        <>
+           <h1>Hey there i am using whatsapp</h1>
+        </>
+
+  )
+
 }

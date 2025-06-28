@@ -117,12 +117,16 @@ userRouter.get("/purchases", userMiddleware, async function (req, res) {
             message: "No purchases found",
         });
     }
+    
 
+    //Maps all the purchase documents to extract just the courseIds
     const purchasesCourseIds = purchases.map(p => p.courseId);
 
+    //then find the courses by matching the courseId extracted from purchase model and course model
     const coursesData = await courseModel.find({
         _id: { $in: purchasesCourseIds },
-    });
+    })
+    .populate("creatorId", "firstName lastName");
 
     res.status(200).json({
         purchases,

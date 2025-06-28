@@ -35,10 +35,15 @@ courseRouter.post("/purchase", userMiddleware, async function (req, res) {
     });
 });
 
+
+
 courseRouter.get("/preview", async function (req, res) {
     const courses = await courseModel
     .find({})
     .populate("creatorId", "firstName lastName");
+
+    const data = await courseModel.findOne().populate("creatorId", "firstName lastName");
+    console.log("Hello HI please",data);
 
     res.status(200).json({
         courses,
