@@ -8,6 +8,11 @@ const { JWT_ADMIN_PASSWORD } = require("../config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const zod = require("zod");
+const multer = require("multer");
+const path = require("path");
+const bucket = require("../firebase/firebase");
+const upload = multer({ dest: "temp/" });
+
 
 adminRouter.post("/signup", async function (req, res) {
 
@@ -216,6 +221,44 @@ adminRouter.put("/course", adminMiddleware, async function (req, res) {
         message: "Course updated!",
     });
 });
+
+adminRouter.post("/course/:id/upload", upload.single("file"), async (req,res) =>{
+    try {
+        const {title, type} = req.body;
+        const courseId = req.params.id;
+        const file = req.file;
+
+        if (!file) {
+        return res.status(400).json({ message: "No file uploaded" });
+         }
+        
+        //Storing the file given by user to firebase storage
+        // eg destination - /courses/22325324/lecture2.mp4
+        const destination = `courses/${Date.now()}_${file.originalname}`
+ 
+        await bucket.upload(file.path, { destination, public: true });
+
+        const fileUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+        
+        //$push - to appends the items to content array
+        await courseModel.findByIdAndUpdate(courseId,{
+            $push:{
+                content: {
+                    title,
+                    type,
+                    url: fileUrl,
+                },
+            },
+        });
+
+        res.status(200).json({ message: "Content uploaded", url: fileUrl });
+    } catch(err) {
+         console.error(err);
+    res.status(500).json({ message: "Upload failed" });
+        
+    }
+})
+
 
 adminRouter.delete("/course", adminMiddleware, async function (req, res) {
     const adminId = req.adminId;

@@ -30,6 +30,15 @@ const courseSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "admin",
     },
+    content: [
+
+        {
+            title: String,
+            type: String,
+            url: String,
+            uploadedAt: {type: Date, default: Date.now}
+        }
+    ]
 });
 
 const purchaseSchema = new Schema({
